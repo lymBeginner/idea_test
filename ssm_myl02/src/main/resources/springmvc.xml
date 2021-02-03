@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--  开启注解扫描  -->
+    <context:component-scan base-package="com.shop.controller"></context:component-scan>
+    <!--<context:component-scan base-package="com.shop"></context:component-scan>-->
+
+    <!--放行springmvc 对静态资源拦截
+
+      mapping  映射项目中资源的路径
+      location  浏览器中访问路径
+
+    <mvc:resources mapping="/css/**" location="/css/"/>
+    <mvc:resources mapping="/js/**" location="/js/"/>
+
+    -->
+
+    <mvc:resources mapping="/css/**" location="/css/"></mvc:resources>
+    <mvc:resources mapping="/images/**" location="/images/"></mvc:resources>
+    <mvc:resources mapping="/js/**" location="/js/"></mvc:resources>
+
+
+    <!--将配置好的 日期转换器 挂在 在这里 -->
+    <mvc:annotation-driven conversion-service="myConversionService"></mvc:annotation-driven>
+
+    <!--视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    <!--配置日期转换器-->
+    <!--
+      springmvc 允许你配置多个转换器
+    -->
+
+    <bean name="myConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.shop.utils.MyConvter"></bean>
+                <!--这里将来可以配置很多个转换器-->
+                <!--......-->
+            </set>
+        </property>
+    </bean>
+
+    <!--配置文件上传的 组件-->
+    <bean name="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--上传大小
+          字节为单位     1kb = 1024字节
+          ..
+        -->
+        <property name="maxUploadSize" value="5200000"></property>
+    </bean>
+
+
+    <!--配置springmvc全局异常-->
+    <!--<bean name="myException" class="com.shop.utils.MyHandlerExceptionResolver"></bean>-->
+</beans>
